@@ -26,7 +26,7 @@ if [ $# -eq 2 -a "$COMMAND" = "root" ]; then
 	echo "Payload: $PAYLOAD"
 fi
 
-apt-get install -y dhcpcd hostapd dnsmasq
+apt-get install -y dhcpcd5 hostapd dnsmasq
 
 systemctl stop dnsmasq dhcpcd
 
@@ -52,7 +52,7 @@ cp hostapd.conf /etc/hostapd/hostapd.conf
 
 echo "Starting DNSMASQ, DHCPCD and hostap"
 systemctl start dnsmasq dhcpcd
-hostap /etc/hostapd/hostapd.conf &
+hostapd /etc/hostapd/hostapd.conf &
 
 if [ "$COMMAND" = "activate" ]; then
 	./activate-toon.sh
