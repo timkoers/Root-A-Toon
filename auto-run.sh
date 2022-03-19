@@ -28,6 +28,8 @@ fi
 
 apt-get install -y dhcpcd hostapd dnsmasq
 
+systemctl stop dnsmasq dhcpcd
+
 echo "Creating backup of /etc/dhcpcd.conf -> /etc/dhcpcd.conf.bak"
 cp /etc/dhcpcd.conf /etc/dhcpcd.conf.bak
 
@@ -46,6 +48,12 @@ cp dnsmasq.conf /etc/dnsmasq.conf
 echo "Copying hostapd configuration"
 cp hostapd.conf /etc/hostapd/hostapd.conf
 
+# (re)Start the various daemons
+
+echo "Starting DNSMASQ, DHCPCD and hostap"
+systemctl start dnsmasq dhcpcd
+hostap /etc/hostapd/hostapd.conf &
+
 if [ "$COMMAND" = "activate" ]; then
 	./activate-toon.sh
 elif [ "$COMMAND" = "root" ]; then
@@ -55,6 +63,10 @@ elif [ "$COMMAND" = "root" ]; then
 		./root-toon.sh $PAYLOAD
 	fi
 fi
+
+echo "Stopping DNSMASQ, DHCPCD and hostap"
+systemctl stop dnsmasq dhcpcd
+killall hostap
 
 echo "Resotring backup of /etc/dhcpcd.conf"
 cp /etc/dhcpcd.conf.bak /etc/dhcpcd.conf
