@@ -26,6 +26,23 @@ if [ $# -eq 2 -a "$COMMAND" = "root" ]; then
 	echo "Payload: $PAYLOAD"
 fi
 
+function ctrlc_handler()
+{
+	echo ""
+	echo "WARNING"
+	echo ""
+	echo ""
+	echo "Please restore your backups manually!"
+	echo "If you run this script again without doing so"
+	echo "Your backups will get overwritten!"
+	echo ""
+	echo ""
+	echo "WARNING"
+	echo ""
+}
+
+trap ctrlc_handler SIGINT
+
 apt-get install -y dhcpcd5 hostapd dnsmasq
 
 systemctl stop dnsmasq dhcpcd
