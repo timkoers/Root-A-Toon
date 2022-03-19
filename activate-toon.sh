@@ -22,8 +22,8 @@ read QUESTION
 echo "Blocking all HTTPS (and therefore Toon VPN). Now we wait until the Toon disconnects the VPN and sends traffic towards the service center on the wifi. After a minute or so start the activation (use a random activation code and retry until it succeeds. Don't go back to the home activation screen."
 /sbin/iptables -I FORWARD -p tcp --dport 443 -j DROP
 
-OUTPUT=`/usr/sbin/tcpdump -n -i any port 31080 -c 1 2>/dev/null` || exit "tcpdump failed"
-IP=`echo $OUTPUT | cut -d\  -f5 | cut -d\. -f1,2,3,4`
+OUTPUT=`tcpdump -n -i any port 31080 -c 1 2>/dev/null` || exit "tcpdump failed"
+IP=`echo $OUTPUT | cut -d\  -f7 | cut -d\. -f1,2,3,4`
 
 
 echo "The Toon is connecting to IP: $IP"
@@ -49,7 +49,7 @@ RESPONSE='HTTP/1.1 200 OK\n\n
 
 DONE=false
 
-while ! $DONE 
+while ! $DONE
 do
 cat /tmp/pipe.out | nc -q 0 -Nl 31080 | tee /tmp/pipe.in &
 
@@ -59,7 +59,7 @@ echo $LINE
 if [[ $line = *"action class"* ]]
 then
   COMMONNAME=`echo $line | sed 's/.* commonname="\(.*\)".*/\1/'`
-  UUID="$COMMONNAME:happ_scsync" 
+  UUID="$COMMONNAME:happ_scsync"
   REQUESTID=`echo $line | sed 's/.* requestid="\(.*\)" .*/\1/'`
   TOSEND=`echo $RESPONSE | sed "s/_REQUESTID_/$REQUESTID/" | sed "s/_DESTCOMMONNAME_/$COMMONNAME/" | sed "s/_DESTUUID_/$UUID/" `
 fi
@@ -73,7 +73,7 @@ then
   echo "This is not a activation request."
   echo "" > /tmp/pipe.out
 fi
-  
+
 done < /tmp/pipe.in
 
 done
@@ -110,7 +110,7 @@ RESPONSE='HTTP/1.1 200 OK\n\n
 
 DONE=false
 
-while ! $DONE 
+while ! $DONE
 do
 cat /tmp/pipe.out | nc -q 0 -Nl 31080 | tee /tmp/pipe.in &
 
@@ -120,7 +120,7 @@ echo $LINE
 if [[ $line = *"action class"* ]]
 then
   COMMONNAME=`echo $line | sed 's/.* commonname="\(.*\)".*/\1/'`
-  UUID="$COMMONNAME:happ_scsync" 
+  UUID="$COMMONNAME:happ_scsync"
   REQUESTID=`echo $line | sed 's/.* requestid="\(.*\)" .*/\1/'`
   TOSEND=`echo $RESPONSE | sed "s/_REQUESTID_/$REQUESTID/" | sed "s/_DESTCOMMONNAME_/$COMMONNAME/" | sed "s/_DESTUUID_/$UUID/" `
 fi
@@ -130,7 +130,7 @@ then
   echo -e $TOSEND > /tmp/pipe.out
   DONE=true
 fi
-  
+
 done < /tmp/pipe.in
 
 done

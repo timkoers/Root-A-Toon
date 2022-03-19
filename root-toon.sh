@@ -26,7 +26,7 @@ then
 fi
 
 
-if ! [ $1 ] 
+if ! [ $1 ]
 then
  echo "Default payload loaded: Kill qt-gui"
  PAYLOAD="killall -9 qt-gui"
@@ -38,9 +38,9 @@ fi
 echo "Blocking all HTTPS (and therefore Toon VPN). Reboot your toon now. And after that press the 'software' button on your Toon."
 /sbin/iptables -I FORWARD -p tcp --dport 443 -j DROP
 
-OUTPUT=`/usr/sbin/tcpdump -n -i any port 31080 -c 1 2>/dev/null` || exit "tcpdump failed"
+OUTPUT=`tcpdump -n -i any port 31080 -c 1 2>/dev/null` || exit "tcpdump failed"
 TOONIP=`echo $OUTPUT | cut -d\  -f3 | cut -d\. -f1,2,3,4`
-IP=`echo $OUTPUT | cut -d\  -f5 | cut -d\. -f1,2,3,4`
+IP=`echo $OUTPUT | cut -d\  -f7 | cut -d\. -f1,2,3,4`
 
 [ -f /tmp/pipe.in ] || /usr/bin/mkfifo /tmp/pipe.in
 [ -f /tmp/pipe.out ] || /usr/bin/mkfifo /tmp/pipe.out
@@ -68,7 +68,7 @@ RESPONSE='HTTP/1.1 200 OK\n\n
 
 DONE=false
 
-while ! $DONE 
+while ! $DONE
 do
 cat /tmp/pipe.out | nc -q 0 -Nl 31080 | tee /tmp/pipe.in &
 
@@ -78,7 +78,7 @@ do
   if [[ $line = *"action class"* ]]
   then
     COMMONNAME=`echo $line | sed 's/.* commonname="\(.*\)".*/\1/'`
-    UUID="$COMMONNAME:hcb_config" 
+    UUID="$COMMONNAME:hcb_config"
     REQUESTID=`echo $line | sed 's/.* requestid="\(.*\)" .*/\1/'`
     TOSEND=`echo $RESPONSE | sed "s/_REQUESTID_/$REQUESTID/" | sed "s/_DESTCOMMONNAME_/$COMMONNAME/" | sed "s/_DESTUUID_/$UUID/" `
   fi
@@ -113,12 +113,12 @@ rm -f /tmp/pipe.in
 rm -f /tmp/pipe.out
 /sbin/iptables -D FORWARD -p tcp --dport 443 -j DROP
 
-if [ $SUCCESS -ne 0 ] 
+if [ $SUCCESS -ne 0 ]
 then
   echo "Response payload was not sent. Please try again"
   exit
 fi
-if [ "$PAYLOAD" == "killall -9 qt-gui" ] 
+if [ "$PAYLOAD" == "killall -9 qt-gui" ]
 then
   echo "Done sending the payload!"
   exit
