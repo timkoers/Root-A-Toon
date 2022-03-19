@@ -28,7 +28,9 @@ fi
 
 function ctrlc_handler()
 {
-	sleep 5
+	echo "Terminating.."
+
+	sleep 1
 
 	echo ""
 	echo "WARNING"
@@ -73,7 +75,7 @@ echo "Starting DNSMASQ, DHCPCD and hostap"
 systemctl start dnsmasq dhcpcd
 hostapd /etc/hostapd/hostapd.conf &
 
-sleep 5
+sleep 1
 
 echo ""
 echo ""
