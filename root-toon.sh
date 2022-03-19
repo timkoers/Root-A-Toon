@@ -32,6 +32,7 @@ then
  PAYLOAD="killall -9 qt-gui"
 else
  [ -f $1 ] || exit "Payload file does not exists!"
+ echo "Custom payload loaded"
  PAYLOAD=`cat $1`
 fi
 
