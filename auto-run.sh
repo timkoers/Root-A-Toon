@@ -36,7 +36,7 @@ function ctrlc_handler()
 	echo "WARNING"
 	echo ""
 	echo ""
-	echo "Please restore your backups manually!"
+	echo "Please verify/restore your backups manually!"
 	echo "If you run this script again without doing so"
 	echo "Your backups will get overwritten!"
 	echo ""
@@ -71,7 +71,7 @@ cp hostapd.conf /etc/hostapd/hostapd.conf
 
 # (re)Start the various daemons
 
-echo "Starting DNSMASQ, DHCPCD and hostap"
+echo "Starting DNSMASQ, DHCPCD and hostapd"
 systemctl start dnsmasq dhcpcd
 hostapd /etc/hostapd/hostapd.conf &
 
@@ -93,9 +93,8 @@ elif [ "$COMMAND" = "root" ]; then
 	fi
 fi
 
-echo "Stopping DNSMASQ, DHCPCD and hostapd"
+echo "Stopping DNSMASQ and DHCPCD"
 systemctl stop dnsmasq dhcpcd
-killall hostapd
 
 echo "Resotring backup of /etc/dhcpcd.conf"
 cp /etc/dhcpcd.conf.bak /etc/dhcpcd.conf
