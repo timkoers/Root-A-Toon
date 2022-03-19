@@ -54,6 +54,8 @@ echo "Starting DNSMASQ, DHCPCD and hostap"
 systemctl start dnsmasq dhcpcd
 hostapd /etc/hostapd/hostapd.conf &
 
+sleep 5
+
 echo ""
 echo ""
 echo "Starting script.."
