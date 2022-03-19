@@ -28,6 +28,8 @@ fi
 
 function ctrlc_handler()
 {
+	sleep 5
+
 	echo ""
 	echo "WARNING"
 	echo ""
@@ -89,9 +91,9 @@ elif [ "$COMMAND" = "root" ]; then
 	fi
 fi
 
-echo "Stopping DNSMASQ, DHCPCD and hostap"
+echo "Stopping DNSMASQ, DHCPCD and hostapd"
 systemctl stop dnsmasq dhcpcd
-killall hostap
+killall hostapd
 
 echo "Resotring backup of /etc/dhcpcd.conf"
 cp /etc/dhcpcd.conf.bak /etc/dhcpcd.conf
