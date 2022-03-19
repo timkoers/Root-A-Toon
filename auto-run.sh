@@ -54,6 +54,12 @@ echo "Starting DNSMASQ, DHCPCD and hostap"
 systemctl start dnsmasq dhcpcd
 hostapd /etc/hostapd/hostapd.conf &
 
+echo ""
+echo ""
+echo "Starting script.."
+echo ""
+echo ""
+
 if [ "$COMMAND" = "activate" ]; then
 	./activate-toon.sh
 elif [ "$COMMAND" = "root" ]; then
